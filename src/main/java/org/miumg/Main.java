@@ -52,10 +52,16 @@ public class Main {
         p4.setNumeroTelefono(12369854);
         p4.setNombre("Alexander");
         p4.setDireccion("Mita");
+
         Personas p5 = new Personas();
-        p4.setNumeroTelefono(18569854);
-        p4.setNombre("Keyra");
-        p4.setDireccion("Huehue");
+        p5.setNumeroTelefono(18569854);
+        p5.setNombre("Keyra");
+        p5.setDireccion("Huehue");
+
+        Personas p6 = new Personas();
+        p6.setNumeroTelefono(85236974);
+        p6.setNombre("Alejandro");
+        p6.setDireccion("ReU");
 
         //Insertar
         perso.insertar(p1);
@@ -63,6 +69,7 @@ public class Main {
         perso.insertar(p3);
         perso.insertar(p4);
         perso.insertar(p5);
+        perso.insertar(p6);
 
         System.out.println("\nMostrando el árbol en ORDEN:");
 
