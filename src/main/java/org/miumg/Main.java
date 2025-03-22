@@ -52,12 +52,17 @@ public class Main {
         p4.setNumeroTelefono(12369854);
         p4.setNombre("Alexander");
         p4.setDireccion("Mita");
+        Personas p5 = new Personas();
+        p4.setNumeroTelefono(18569854);
+        p4.setNombre("Keyra");
+        p4.setDireccion("Huehue");
 
         //Insertar
         perso.insertar(p1);
         perso.insertar(p2);
         perso.insertar(p3);
         perso.insertar(p4);
+        perso.insertar(p5);
 
         System.out.println("\nMostrando el árbol en ORDEN:");
 
