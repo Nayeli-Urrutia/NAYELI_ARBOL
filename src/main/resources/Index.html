@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Telefónica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --danger-color: #ef4444;
+      --danger-dark: #dc2626;
+      --text-color: #1f2937;
+      --bg-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      padding: 2rem;
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--text-color);
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      font-weight: 600;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--bg-gradient);
+      border-radius: 2px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--bg-gradient);
+      color: white;
+      box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+      color: white;
+      box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .form-container {
+      display: none;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .contacts-container {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .contact-card {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-info {
+      flex-grow: 1;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Agenda Telefónica</h1>
+
+  <div class="buttons">
+    <button onclick="toggleForm()" class="btn-primary">
+      <i class="fas fa-user-plus"></i>
+      Agregar Contacto
+    </button>
+    <button onclick="toggleContacts()" class="btn-primary">
+      <i class="fas fa-address-book"></i>
+      Visualizar Agenda
+    </button>
+    <button onclick="toggleTreeView()" class="btn-primary">
+      <i class="fas fa-sitemap"></i>
+      Ver Diagrama de Árbol
+    </button>
+    <button onclick="toggleTreeViewTelefono()" class="btn-primary">
+      <i class="fas fa-phone-square"></i>
+      Ver Diagrama (Teléfono)
+    </button>
+  </div>
+
+  <div id="formContainer" class="form-container">
+    <div class="form-group">
+      <label for="nombre">
+        <i class="fas fa-user"></i>
+        Nombre:
+      </label>
+      <input type="text" id="nombre" placeholder="Ingrese el nombre" required>
+    </div>
+    <div class="form-group">
+      <label for="direccion">
+        <i class="fas fa-map-marker-alt"></i>
+        Dirección:
+      </label>
+      <input type="text" id="direccion" placeholder="Ingrese la dirección" required>
+    </div>
+    <div class="form-group">
+      <label for="telefono">
+        <i class="fas fa-phone"></i>
+        Teléfono:
+      </label>
+      <input type="tel" id="telefono" placeholder="Ingrese el teléfono" required>
+    </div>
+    <button onclick="agregarContacto()" class="btn-primary">
+      <i class="fas fa-save"></i>
+      Guardar Contacto
+    </button>
+  </div>
+
+  <div id="contactsContainer" class="contacts-container">
+    <!-- Los contactos se mostrarán aquí -->
+  </div>
+
+  <div id="treeContainer" style="display: none;">
+    <canvas id="treeCanvas" style="width: 100%; height: 500px; margin-top: 20px;"></canvas>
+  </div>
+</div>
+
+<script>
+  let contacts = [];
+
+  class NodoTelefono {
+    constructor(contacto) {
+      this.contacto = contacto;
+      this.izquierda = null;
+      this.derecha = null;
+    }
+  }
+
+  class ArbolBinarioTelefono {
+    constructor() {
+      this.raiz = null;
+    }
+
+    insertar(contacto) {
+      const nuevoNodo = new NodoTelefono(contacto);
+      if (!this.raiz) {
+        this.raiz = nuevoNodo;
+        return;
+      }
+      this.insertarNodo(this.raiz, nuevoNodo);
+    }
+
+    insertarNodo(nodo, nuevoNodo) {
+      const telefonoActual = nuevoNodo.contacto.telefono;
+      const telefonoPadre = nodo.contacto.telefono;
+
+      if (telefonoActual.localeCompare(telefonoPadre) < 0) {
+        if (!nodo.izquierda) {
+          nodo.izquierda = nuevoNodo;
+        } else {
+          this.insertarNodo(nodo.izquierda, nuevoNodo);
+        }
+      } else {
+        if (!nodo.derecha) {
+          nodo.derecha = nuevoNodo;
+        } else {
+          this.insertarNodo(nodo.derecha, nuevoNodo);
+        }
+      }
+    }
+
+    dibujarArbol(canvas) {
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
+
+      if (!this.raiz) return;
+
+      const nodosNivel = {};
+      let maxNivel = 0;
+
+      const calcularProfundidad = (nodo, nivel = 0) => {
+        if (!nodo) return nivel - 1;
+        maxNivel = Math.max(maxNivel, nivel);
+        return Math.max(
+                calcularProfundidad(nodo.izquierda, nivel + 1),
+                calcularProfundidad(nodo.derecha, nivel + 1)
+        );
+      };
+
+      calcularProfundidad(this.raiz);
+
+      const calcularPosiciones = (nodo, nivel, posX, anchoDisponible) => {
+        if (!nodo) return;
+
+        const espaciadoVertical = height / (maxNivel + 2);
+        const y = nivel * espaciadoVertical + espaciadoVertical;
+
+        if (!nodosNivel[nivel]) {
+          nodosNivel[nivel] = [];
+        }
+
+        nodosNivel[nivel].push({
+          x: posX,
+          y: y,
+          nombre: nodo.contacto.nombre,
+          telefono: nodo.contacto.telefono
+        });
+
+        const siguienteAncho = anchoDisponible / 2;
+        calcularPosiciones(nodo.izquierda, nivel + 1, posX - siguienteAncho, siguienteAncho);
+        calcularPosiciones(nodo.derecha, nivel + 1, posX + siguienteAncho, siguienteAncho);
+      };
+
+      calcularPosiciones(this.raiz, 0, width / 2, width / 4);
+
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 2;
+      for (let nivel in nodosNivel) {
+        const nodosPadre = nodosNivel[nivel];
+        const nodosHijo = nodosNivel[parseInt(nivel) + 1] || [];
+
+        for (let i = 0; i < nodosPadre.length; i++) {
+          const padre = nodosPadre[i];
+          const hijosDelPadre = nodosHijo.filter(hijo =>
+                  Math.abs(hijo.x - padre.x) <= width / Math.pow(2, parseInt(nivel) + 1)
+          );
+
+          hijosDelPadre.forEach(hijo => {
+            ctx.beginPath();
+            ctx.moveTo(padre.x, padre.y);
+            const controlY = (padre.y + hijo.y) / 2;
+            ctx.bezierCurveTo(
+                    padre.x, controlY,
+                    hijo.x, controlY,
+                    hijo.x, hijo.y
+            );
+            ctx.stroke();
+          });
+        }
+      }
+
+      for (let nivel in nodosNivel) {
+        nodosNivel[nivel].forEach(nodo => {
+          ctx.beginPath();
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#6366f1';
+          ctx.lineWidth = 2;
+          ctx.arc(nodo.x, nodo.y, 30, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#1f2937';
+          ctx.font = '12px Poppins';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          const nombreCorto = nodo.nombre.length > 10 ?
+                  nodo.nombre.substring(0, 8) + '...' :
+                  nodo.nombre;
+
+          ctx.fillText(nombreCorto, nodo.x, nodo.y - 8);
+          ctx.fillText(nodo.telefono, nodo.x, nodo.y + 8);
+        });
+      }
+    }
+  }
+
+  class Nodo {
+    constructor(contacto) {
+      this.contacto = contacto;
+      this.izquierda = null;
+      this.derecha = null;
+    }
+  }
+
+  class ArbolBinario {
+    constructor() {
+      this.raiz = null;
+    }
+
+    insertar(contacto) {
+      const nuevoNodo = new Nodo(contacto);
+      if (!this.raiz) {
+        this.raiz = nuevoNodo;
+        return;
+      }
+      this.insertarNodo(this.raiz, nuevoNodo);
+    }
+
+    insertarNodo(nodo, nuevoNodo) {
+      const nombreActual = nuevoNodo.contacto.nombre.toLowerCase();
+      const nombrePadre = nodo.contacto.nombre.toLowerCase();
+
+      if (nombreActual.localeCompare(nombrePadre) < 0) {
+        if (!nodo.izquierda) {
+          nodo.izquierda = nuevoNodo;
+        } else {
+          this.insertarNodo(nodo.izquierda, nuevoNodo);
+        }
+      } else {
+        if (!nodo.derecha) {
+          nodo.derecha = nuevoNodo;
+        } else {
+          this.insertarNodo(nodo.derecha, nuevoNodo);
+        }
+      }
+    }
+
+    encontrarMinimo(nodo) {
+      while (nodo.izquierda) {
+        nodo = nodo.izquierda;
+      }
+      return nodo;
+    }
+
+    eliminar(nombre) {
+      this.raiz = this.eliminarNodo(this.raiz, nombre);
+    }
+
+    eliminarNodo(nodo, nombre) {
+      if (!nodo) return null;
+
+      if (nombre.localeCompare(nodo.contacto.nombre) < 0) {
+        nodo.izquierda = this.eliminarNodo(nodo.izquierda, nombre);
+      } else if (nombre.localeCompare(nodo.contacto.nombre) > 0) {
+        nodo.derecha = this.eliminarNodo(nodo.derecha, nombre);
+      } else {
+        if (!nodo.izquierda) return nodo.derecha;
+        if (!nodo.derecha) return nodo.izquierda;
+
+        const minNodo = this.encontrarMinimo(nodo.derecha);
+        nodo.contacto = minNodo.contacto;
+        nodo.derecha = this.eliminarNodo(nodo.derecha, minNodo.contacto.nombre);
+      }
+      return nodo;
+    }
+
+    inorden(nodo, contactos) {
+      if (nodo) {
+        this.inorden(nodo.izquierda, contactos);
+        contactos.push(nodo.contacto);
+        this.inorden(nodo.derecha, contactos);
+      }
+    }
+
+    dibujarArbol(canvas) {
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
+
+      if (!this.raiz) return;
+
+      const nodosNivel = {};
+      let maxNivel = 0;
+
+      // Calcular la profundidad máxima del árbol
+      const calcularProfundidad = (nodo, nivel = 0) => {
+        if (!nodo) return nivel - 1;
+        maxNivel = Math.max(maxNivel, nivel);
+        return Math.max(
+                calcularProfundidad(nodo.izquierda, nivel + 1),
+                calcularProfundidad(nodo.derecha, nivel + 1)
+        );
+      };
+
+      calcularProfundidad(this.raiz);
+
+      // Calcular posiciones con espaciado dinámico
+      const calcularPosiciones = (nodo, nivel, posX, anchoDisponible) => {
+        if (!nodo) return;
+
+        const espaciadoVertical = height / (maxNivel + 2);
+        const y = nivel * espaciadoVertical + espaciadoVertical;
+
+        if (!nodosNivel[nivel]) {
+          nodosNivel[nivel] = [];
+        }
+
+        nodosNivel[nivel].push({
+          x: posX,
+          y: y,
+          nombre: nodo.contacto.nombre,
+          telefono: nodo.contacto.telefono
+        });
+
+        const siguienteAncho = anchoDisponible / 2;
+        calcularPosiciones(nodo.izquierda, nivel + 1, posX - siguienteAncho, siguienteAncho);
+        calcularPosiciones(nodo.derecha, nivel + 1, posX + siguienteAncho, siguienteAncho);
+      };
+
+      calcularPosiciones(this.raiz, 0, width / 2, width / 4);
+
+      // Dibujar conexiones con curvas Bézier
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 2;
+      for (let nivel in nodosNivel) {
+        const nodosPadre = nodosNivel[nivel];
+        const nodosHijo = nodosNivel[parseInt(nivel) + 1] || [];
+
+        for (let i = 0; i < nodosPadre.length; i++) {
+          const padre = nodosPadre[i];
+          const hijosDelPadre = nodosHijo.filter(hijo =>
+                  Math.abs(hijo.x - padre.x) <= width / Math.pow(2, parseInt(nivel) + 1)
+          );
+
+          hijosDelPadre.forEach(hijo => {
+            ctx.beginPath();
+            ctx.moveTo(padre.x, padre.y);
+
+            // Puntos de control para la curva Bézier
+            const controlY = (padre.y + hijo.y) / 2;
+            ctx.bezierCurveTo(
+                    padre.x, controlY,
+                    hijo.x, controlY,
+                    hijo.x, hijo.y
+            );
+            ctx.stroke();
+          });
+        }
+      }
+
+      // Dibujar nodos con información
+      for (let nivel in nodosNivel) {
+        nodosNivel[nivel].forEach(nodo => {
+          // Dibujar círculo del nodo
+          ctx.beginPath();
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#6366f1';
+          ctx.lineWidth = 2;
+          ctx.arc(nodo.x, nodo.y, 30, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Dibujar texto del nombre
+          ctx.fillStyle = '#1f2937';
+          ctx.font = '12px Poppins';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // Dividir el nombre si es muy largo
+          const nombreCorto = nodo.nombre.length > 10 ?
+                  nodo.nombre.substring(0, 8) + '...' :
+                  nodo.nombre;
+
+          ctx.fillText(nombreCorto, nodo.x, nodo.y - 8);
+          ctx.fillText(nodo.telefono, nodo.x, nodo.y + 8);
+        });
+      }
+    }
+
+    obtenerContactosOrdenados() {
+      const contactos = [];
+      this.inorden(this.raiz, contactos);
+      return contactos;
+    }
+  }
+
+  const agenda = new ArbolBinario();
+  const agendaTelefono = new ArbolBinarioTelefono();
+
+  function toggleForm() {
+    const formContainer = document.getElementById('formContainer');
+    const contactsContainer = document.getElementById('contactsContainer');
+    formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+    contactsContainer.style.display = 'none';
+  }
+
+  function toggleContacts() {
+    const formContainer = document.getElementById('formContainer');
+    const contactsContainer = document.getElementById('contactsContainer');
+    contactsContainer.style.display = contactsContainer.style.display === 'none' ? 'block' : 'none';
+    formContainer.style.display = 'none';
+    mostrarContactos();
+  }
+
+  function agregarContacto() {
+    const nombre = document.getElementById('nombre').value;
+    const direccion = document.getElementById('direccion').value;
+    const telefono = document.getElementById('telefono').value;
+
+    if (!nombre || !direccion || !telefono) {
+      alert('Por favor, complete todos los campos');
+      return;
+    }
+
+    if (!/^[0-9]+$/.test(telefono)) {
+      alert('El teléfono debe contener solo números');
+      return;
+    }
+
+    const contacto = { nombre, direccion, telefono };
+    agenda.insertar(contacto);
+    agendaTelefono.insertar(contacto);
+
+    document.getElementById('nombre').value = '';
+    document.getElementById('direccion').value = '';
+    document.getElementById('telefono').value = '';
+
+    alert('Contacto agregado exitosamente');
+    mostrarContactos();
+
+    // Actualizar visualización del árbol si está visible
+    const treeContainer = document.getElementById('treeContainer');
+    if (treeContainer.style.display === 'block') {
+      const canvas = document.getElementById('treeCanvas');
+      agenda.dibujarArbol(canvas);
+    }
+  }
+
+  function eliminarContacto(nombre) {
+    agenda.eliminar(nombre);
+    mostrarContactos();
+  }
+
+  function toggleTreeView() {
+    const formContainer = document.getElementById('formContainer');
+    const contactsContainer = document.getElementById('contactsContainer');
+    const treeContainer = document.getElementById('treeContainer');
+    const canvas = document.getElementById('treeCanvas');
+
+    formContainer.style.display = 'none';
+    contactsContainer.style.display = 'none';
+    treeContainer.style.display = 'block';
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    agenda.dibujarArbol(canvas);
+  }
+
+  function toggleTreeViewTelefono() {
+    const formContainer = document.getElementById('formContainer');
+    const contactsContainer = document.getElementById('contactsContainer');
+    const treeContainer = document.getElementById('treeContainer');
+    const canvas = document.getElementById('treeCanvas');
+
+    formContainer.style.display = 'none';
+    contactsContainer.style.display = 'none';
+    treeContainer.style.display = 'block';
+
+    // Ajustar el tamaño del canvas al contenedor
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    agendaTelefono.dibujarArbol(canvas);
+  }
+
+  function mostrarContactos() {
+    const container = document.getElementById('contactsContainer');
+    container.innerHTML = '';
+    const treeContainer = document.getElementById('treeContainer');
+    treeContainer.style.display = 'none';
+
+    const contactos = agenda.obtenerContactosOrdenados();
+    contactos.forEach(contacto => {
+      const contactoDiv = document.createElement('div');
+      contactoDiv.className = 'contact-card';
+      contactoDiv.innerHTML = `
+                    <div class="contact-info">
+                        <strong>Nombre:</strong> ${contacto.nombre}<br>
+                        <strong>Dirección:</strong> ${contacto.direccion}<br>
+                        <strong>Teléfono:</strong> ${contacto.telefono}
+                    </div>
+                    <button onclick="eliminarContacto('${contacto.nombre}')" class="btn-danger">Eliminar</button>
+                `;
+      container.appendChild(contactoDiv);
+    });
+
+    if (contactos.length === 0) {
+      container.innerHTML = '<p>No hay contactos en la agenda</p>';
+    }
+  }
+</script>
+</body>
+
+
