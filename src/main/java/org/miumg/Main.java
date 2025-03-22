@@ -1,5 +1,6 @@
 package org.miumg;
 
+import ArbolBinario.Arbol;
 import Datos.ArbolPersona;
 import Datos.Personas;
 
@@ -8,7 +9,7 @@ import Datos.Personas;
 public class Main {
 
     public static void main(String[] args) {
-/*
+
         Arbol aarbol = new Arbol();
         aarbol.insertar(6);
         aarbol.insertar(10);
@@ -17,9 +18,25 @@ public class Main {
         aarbol.insertar(5);
         aarbol.insertar(3);
         aarbol.insertar(15);
+
+        //Recorer el arbol en preorden
+        System.out.println("\nRecorrido en preorden");
+        aarbol.preorden();
+
+
+        // Recorrer el arbol en postorden
+        System.out.println("\nRecorrido en postorden");
+        aarbol.postorden();
+
+        //Recorrer el arbol en Inorden
+        System.out.println("\necorrido en inorden");
+        aarbol.inorden();
+    }
+}
+
         // aarbol.insertar(8);
         //aarbol.insertar(11);
-
+/*
         ArbolCadena ar = new ArbolCadena();
         ar.insertar("Farore");
         ar.insertar("Impa");
@@ -30,6 +47,8 @@ public class Main {
         System.out.println("fin!");
     }*/
 
+
+/*
         ArbolPersona perso = new ArbolPersona();
 
         //Nodo Padre
@@ -81,3 +100,4 @@ public class Main {
 }
 
 
+ }*/
